@@ -2,6 +2,7 @@
 <h2>Выдача заказа @Model.OrderNumber</h2>
 <form asp-action="ConfirmIssue" method="post">
     <input type="hidden" name="id" value="@Model.Id" />
+    <div asp-validation-summary="All" class="error"></div>
     <label>Документ получателя</label>
     <input type="text" name="recipientDocument" placeholder="Паспорт / ID" />
     <button type="submit">Подтвердить выдачу</button>

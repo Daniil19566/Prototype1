@@ -36,15 +36,32 @@ namespace Prototype.Controllers
                 .ToList();
 
             var sb = new StringBuilder();
-            sb.AppendLine("OrderNumber,CreatedDate,RecipientDocument,Items");
+            sb.AppendLine("OrderNumber,CreatedDate,IssuedDate,RecipientDocument,Items");
 
             foreach (var order in orders)
             {
                 var items = string.Join("; ", order.Items.Select(i => $"{i.Product?.Name} x{i.Quantity}"));
-                sb.AppendLine($"{order.OrderNumber},{order.CreatedDate:O},{order.RecipientDocument},{items}");
+                sb.AppendLine(string.Join(",",
+                    CsvEscape(order.OrderNumber),
+                    CsvEscape(order.CreatedDate.ToString("O")),
+                    CsvEscape(order.IssuedDate?.ToString("O")),
+                    CsvEscape(order.RecipientDocument),
+                    CsvEscape(items)));
             }
 
-            return File(Encoding.UTF8.GetBytes(sb.ToString()), "text/csv", "issued-orders.csv");
+            return File(new UTF8Encoding(encoderShouldEmitUTF8Identifier: false).GetBytes(sb.ToString()), "text/csv", "issued-orders.csv");
+        }
+
+        private static string CsvEscape(string? value)
+        {
+            value ??= string.Empty;
+
+            if (value.Contains(',') || value.Contains('"') || value.Contains('\n') || value.Contains('\r'))
+            {
+                return $"\"{value.Replace("\"", "\"\"")}\"";
+            }
+
+            return value;
         }
     }
 }

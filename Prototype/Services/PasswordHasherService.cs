@@ -1,14 +1,25 @@
-﻿using System.Security.Cryptography;
-using System.Text;
+using Microsoft.AspNetCore.Identity;
+using Prototype.Models;
 
 namespace Prototype.Services
 {
     public class PasswordHasherService
     {
-        public string Hash(string value)
+        private readonly PasswordHasher<User> hasher = new();
+
+        public string Hash(User user, string password) => hasher.HashPassword(user, password);
+
+        public bool Verify(User user, string password)
         {
-            var bytes = SHA256.HashData(Encoding.UTF8.GetBytes(value));
-            return Convert.ToHexString(bytes);
+            try
+            {
+                var result = hasher.VerifyHashedPassword(user, user.PasswordHash, password);
+                return result is PasswordVerificationResult.Success or PasswordVerificationResult.SuccessRehashNeeded;
+            }
+            catch (FormatException)
+            {
+                return false;
+            }
         }
     }
 }

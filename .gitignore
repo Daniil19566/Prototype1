@@ -361,3 +361,7 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+
+# Local project status notes
+docs/project_status.md
+docs/project_notebook.md

@@ -46,6 +46,12 @@ using System;
                 return View(model);
             }
 
+            if (model.Quantity > product.QuantityInStock)
+            {
+                ModelState.AddModelError(nameof(model.Quantity), $"Недостаточно товара на складе. Доступно: {product.QuantityInStock}");
+                return View(model);
+            }
+
             if (db.Orders.Any(x => x.OrderNumber == model.OrderNumber))
             {
                 ModelState.AddModelError(nameof(model.OrderNumber), "Заказ с таким номером уже существует");
@@ -111,7 +117,8 @@ using System;
                     ProductId = item.ProductId,
                     OperationType = StockOperationType.WriteOff,
                     Quantity = item.Quantity,
-                    Comment = $"Списание под заказ {order.OrderNumber}"
+                    Comment = $"Списание под заказ {order.OrderNumber}",
+                    OperatorLogin = CurrentOperatorLogin()
                 });
             }
 
@@ -119,6 +126,65 @@ using System;
             db.SaveChanges();
             return RedirectToAction(nameof(Index));
         }
+
+        [Authorize(Roles = "Employee,Manager")]
+        [HttpGet]
+        public IActionResult Issue(int id)
+        {
+            var order = db.Orders.Find(id);
+            if (order is null) return NotFound();
+            if (order.Status != OrderStatus.ReadyForPickup)
+            {
+                TempData["Error"] = "Выдать можно только заказ, готовый к получению.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            return View(order);
+        }
+
+        [Authorize(Roles = "Employee,Manager")]
+        [HttpPost]
+        public IActionResult ConfirmIssue(int id, string recipientDocument)
+        {
+            var order = db.Orders
+                .Include(x => x.Items)
+                .FirstOrDefault(x => x.Id == id);
+
+            if (order is null) return NotFound();
+            if (order.Status != OrderStatus.ReadyForPickup)
+            {
+                TempData["Error"] = "Выдать можно только заказ, готовый к получению.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            var document = recipientDocument?.Trim();
+            if (string.IsNullOrWhiteSpace(document))
+            {
+                ModelState.AddModelError(nameof(recipientDocument), "Укажите документ получателя.");
+                return View("Issue", order);
+            }
+
+            order.RecipientDocument = document;
+            order.Status = OrderStatus.Issued;
+            order.IssuedDate = DateTime.UtcNow;
+
+            foreach (var item in order.Items)
+            {
+                db.StockOperations.Add(new StockOperation
+                {
+                    ProductId = item.ProductId,
+                    OperationType = StockOperationType.Issue,
+                    Quantity = item.Quantity,
+                    Comment = $"Выдача заказа {order.OrderNumber}",
+                    OperatorLogin = CurrentOperatorLogin()
+                });
+            }
+
+            db.SaveChanges();
+            return RedirectToAction(nameof(Index));
+        }
+
+        private string CurrentOperatorLogin() => User?.Identity?.Name ?? "system";
     }
 
 }

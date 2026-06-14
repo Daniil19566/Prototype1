@@ -13,14 +13,15 @@
 </p>
 <h3>Движение товаров (последние 50 операций)</h3>
 <table>
-    <tr><th>Дата</th><th>Товар</th><th>Тип</th><th>Количество</th><th>Комментарий</th></tr>
+    <tr><th>Дата</th><th>Товар</th><th>Тип</th><th>Количество</th><th>Оператор</th><th>Комментарий</th></tr>
     @foreach (var op in operations)
     {
         <tr>
             <td>@op.Date.ToLocalTime().ToString("dd.MM.yyyy HH:mm")</td>
             <td>@op.Product?.Name</td>
-            <td>@op.OperationType</td>
+            <td>@op.ToDisplayName()</td>
             <td>@op.Quantity</td>
+            <td>@op.OperatorLogin</td>
             <td>@op.Comment</td>
         </tr>
     }

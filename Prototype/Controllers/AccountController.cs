@@ -27,9 +27,9 @@ namespace Prototype.Controllers
             ViewData["ReturnUrl"] = returnUrl;
             if (!ModelState.IsValid) return View(model);
 
-            var hash = hasher.Hash(model.Password);
-            var user = db.Users.FirstOrDefault(x => x.Login == model.Login && x.PasswordHash == hash);
-            if (user is null)
+            var login = model.Login.Trim();
+            var user = db.Users.FirstOrDefault(x => x.Login == login);
+            if (user is null || !hasher.Verify(user, model.Password))
             {
                 ModelState.AddModelError(string.Empty, "Неверный логин или пароль");
                 return View(model);

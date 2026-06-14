@@ -52,7 +52,8 @@ namespace Prototype.Controllers
                 OperationType = StockOperationType.Receipt,
                 Quantity = model.Quantity,
                 Date = model.Date,
-                Comment = "Приём товара"
+                Comment = "Приём товара",
+                OperatorLogin = CurrentOperatorLogin()
             });
             db.SaveChanges();
 
@@ -64,5 +65,7 @@ namespace Prototype.Controllers
             .OrderByDescending(x => x.Date)
             .Take(200)
             .ToList());
+
+        private string CurrentOperatorLogin() => User?.Identity?.Name ?? "system";
     }
 }

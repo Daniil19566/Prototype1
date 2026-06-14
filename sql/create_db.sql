@@ -18,6 +18,7 @@ CREATE TABLE IF NOT EXISTS "Orders" (
     "OrderNumber" VARCHAR(100) NOT NULL UNIQUE,
     "Status" VARCHAR(50) NOT NULL,
     "CreatedDate" TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    "IssuedDate" TIMESTAMPTZ,
     "RecipientDocument" VARCHAR(200)
 );
 
@@ -34,5 +35,6 @@ CREATE TABLE IF NOT EXISTS "StockOperations" (
     "OperationType" VARCHAR(50) NOT NULL,
     "Quantity" INT NOT NULL CHECK ("Quantity" > 0),
     "Date" TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    "Comment" TEXT NOT NULL DEFAULT ''
+    "Comment" TEXT NOT NULL DEFAULT '',
+    "OperatorLogin" TEXT NOT NULL DEFAULT ''
 );

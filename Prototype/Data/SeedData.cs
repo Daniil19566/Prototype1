@@ -7,14 +7,38 @@ namespace Prototype.Data
     {
         public static void Initialize(AppDbContext db, PasswordHasherService hasher)
         {
+            var defaultUsers = new (string Login, string Password, UserRole Role)[]
+            {
+                ("employee", "12345", UserRole.Employee),
+                ("manager", "12345", UserRole.Manager),
+                ("lead", "12345", UserRole.Lead),
+                ("sysadmin", "12345", UserRole.SysAdmin)
+            };
+
             if (!db.Users.Any())
             {
-                db.Users.AddRange(
-                    new User { Login = "employee", PasswordHash = hasher.Hash("12345"), Role = UserRole.Employee },
-                    new User { Login = "manager", PasswordHash = hasher.Hash("12345"), Role = UserRole.Manager },
-                    new User { Login = "lead", PasswordHash = hasher.Hash("12345"), Role = UserRole.Lead },
-                    new User { Login = "sysadmin", PasswordHash = hasher.Hash("12345"), Role = UserRole.SysAdmin }
-                );
+                foreach (var defaultUser in defaultUsers)
+                {
+                    var user = new User
+                    {
+                        Login = defaultUser.Login,
+                        Role = defaultUser.Role
+                    };
+
+                    user.PasswordHash = hasher.Hash(user, defaultUser.Password);
+                    db.Users.Add(user);
+                }
+            }
+            else
+            {
+                foreach (var defaultUser in defaultUsers)
+                {
+                    var user = db.Users.FirstOrDefault(x => x.Login == defaultUser.Login);
+                    if (user is not null && !hasher.Verify(user, defaultUser.Password))
+                    {
+                        user.PasswordHash = hasher.Hash(user, defaultUser.Password);
+                    }
+                }
             }
 
             if (!db.Products.Any())

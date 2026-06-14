@@ -10,6 +10,7 @@
     <header>
         <nav>
             <a asp-controller="Home" asp-action="Index">Главная</a>
+            <a asp-controller="Home" asp-action="Help">Инструкция</a>
             @if (User.Identity?.IsAuthenticated == true)
             {
                 <a asp-controller="Orders" asp-action="Index">Заказы</a>

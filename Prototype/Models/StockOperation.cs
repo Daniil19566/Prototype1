@@ -9,5 +9,6 @@
         public int Quantity { get; set; }
         public DateTime Date { get; set; } = DateTime.UtcNow;
         public string Comment { get; set; } = string.Empty;
+        public string OperatorLogin { get; set; } = string.Empty;
     }
 }

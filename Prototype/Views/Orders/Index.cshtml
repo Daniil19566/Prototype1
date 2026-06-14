@@ -4,7 +4,7 @@
 {
     <p class="error">@TempData["Error"]</p>
 }
-<p><a asp-action="Create">Создать тестовый заказ</a></p>
+<p><a asp-action="Create">Создать заказ</a></p>
 <table>
     <tr><th>Номер</th><th>Дата</th><th>Статус</th><th>Состав</th><th>Действия</th></tr>
     @foreach (var order in Model)
@@ -12,7 +12,7 @@
         <tr>
             <td>@order.OrderNumber</td>
             <td>@order.CreatedDate.ToLocalTime().ToString("dd.MM.yyyy HH:mm")</td>
-            <td>@order.Status</td>
+            <td>@order.ToDisplayName()</td>
             <td>
                 @foreach (var item in order.Items)
                 {
@@ -20,15 +20,15 @@
                 }
             </td>
             <td>
-                @if (order.Status == OrderStatus.Created)
+                @if (order.CanMoveToAssembly())
                 {
                     <a asp-action="ToAssembly" asp-route-id="@order.Id">В сборку</a>
                 }
-                else if (order.Status == OrderStatus.InAssembly)
+                else if (order.CanConfirmAssembly())
                 {
                     <a asp-action="ConfirmAssembly" asp-route-id="@order.Id">Подтвердить комплектацию</a>
                 }
-                else if (order.Status == OrderStatus.ReadyForPickup)
+                else if (order.CanIssue())
                 {
                     <a asp-action="Issue" asp-route-id="@order.Id">Выдать</a>
                 }
