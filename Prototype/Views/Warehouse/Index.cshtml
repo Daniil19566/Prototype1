@@ -1,0 +1,21 @@
+﻿@model List<Prototype.Models.Product>
+<h2>Складские остатки</h2>
+<form method="get">
+    <input type="text" name="search" placeholder="Поиск по наименованию" />
+    <button type="submit">Найти</button>
+</form>
+<p>
+    <a asp-action="Receipt">Приём товара</a> |
+    <a asp-action="Operations">Журнал операций</a>
+</p>
+<table>
+    <tr><th>Товар</th><th>Описание</th><th>Остаток</th></tr>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>@item.Name</td>
+            <td>@item.Description</td>
+            <td>@item.QuantityInStock</td>
+        </tr>
+    }
+</table>

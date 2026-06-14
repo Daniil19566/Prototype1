@@ -1,0 +1,12 @@
+﻿@model Prototype.ViewModels.CreateOrderViewModel
+<h2>Создание тестового заказа</h2>
+<form method="post">
+    <label>Номер заказа</label>
+    <input asp-for="OrderNumber" />
+    <label>Товар</label>
+    <select asp-for="ProductId" asp-items='@(new SelectList(ViewBag.Products, "Id", "Name"))'></select>
+    <label>Количество</label>
+    <input asp-for="Quantity" type="number" />
+    <button type="submit">Создать</button>
+    <div asp-validation-summary="All"></div>
+</form>

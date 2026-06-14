@@ -1,0 +1,12 @@
+﻿@model Prototype.ViewModels.LoginViewModel
+<h2>Вход в систему</h2>
+<form method="post">
+    <input type="hidden" name="returnUrl" value="@ViewData["ReturnUrl"]" />
+    <label>Логин</label>
+    <input asp-for="Login" />
+    <label>Пароль</label>
+    <input asp-for="Password" />
+    <button type="submit">Войти</button>
+    <div asp-validation-summary="All"></div>
+</form>
+<p>Демо-пользователи: employee / manager / lead / sysadmin, пароль: 12345</p>

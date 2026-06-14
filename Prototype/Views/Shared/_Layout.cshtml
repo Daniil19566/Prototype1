@@ -1,0 +1,38 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ПВЗ Прототип</title>
+    <link rel="stylesheet" href="~/css/site.css" />
+</head>
+<body>
+    <header>
+        <nav>
+            <a asp-controller="Home" asp-action="Index">Главная</a>
+            @if (User.Identity?.IsAuthenticated == true)
+            {
+                <a asp-controller="Orders" asp-action="Index">Заказы</a>
+                <a asp-controller="Warehouse" asp-action="Index">Склад</a>
+                @if (User.IsInRole("Manager") || User.IsInRole("Lead"))
+                {
+                    <a asp-controller="Reports" asp-action="Index">Отчёты</a>
+                }
+                @if (User.IsInRole("Manager") || User.IsInRole("SysAdmin"))
+                {
+                    <a asp-controller="Admin" asp-action="Index">Администрирование</a>
+                }
+                <span class="user">@User.Identity.Name (@User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value)</span>
+                <a asp-controller="Account" asp-action="Logout">Выход</a>
+            }
+            else
+            {
+                <a asp-controller="Account" asp-action="Login">Войти</a>
+            }
+        </nav>
+    </header>
+    <main>
+        @RenderBody()
+    </main>
+</body>
+</html>

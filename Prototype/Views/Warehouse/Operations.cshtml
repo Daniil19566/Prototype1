@@ -1,0 +1,15 @@
+﻿@model List<Prototype.Models.StockOperation>
+<h2>Журнал складских операций</h2>
+<table>
+    <tr><th>Дата</th><th>Товар</th><th>Операция</th><th>Количество</th><th>Комментарий</th></tr>
+    @foreach (var op in Model)
+    {
+        <tr>
+            <td>@op.Date.ToLocalTime().ToString("dd.MM.yyyy HH:mm")</td>
+            <td>@op.Product?.Name</td>
+            <td>@op.OperationType</td>
+            <td>@op.Quantity</td>
+            <td>@op.Comment</td>
+        </tr>
+    }
+</table>

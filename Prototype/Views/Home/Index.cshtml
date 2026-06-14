@@ -1,0 +1,24 @@
+﻿<h1>Прототип автоматизации ПВЗ</h1>
+<p>Система покрывает приём товара, управление заказами, выдачу и отчётность.</p>
+@if (User.Identity?.IsAuthenticated != true)
+{
+    <p><a asp-controller="Account" asp-action="Login">Выполните вход для начала работы</a></p>
+}
+else
+{
+    <h3>Быстрый переход</h3>
+    <div class="quick-links">
+        <a class="quick-link" asp-controller="Orders" asp-action="Index">Заказы</a>
+        <a class="quick-link" asp-controller="Warehouse" asp-action="Index">Склад</a>
+
+        @if (User.IsInRole("Manager") || User.IsInRole("Lead"))
+        {
+            <a class="quick-link" asp-controller="Reports" asp-action="Index">Отчёты</a>
+        }
+
+        @if (User.IsInRole("Manager") || User.IsInRole("SysAdmin"))
+        {
+            <a class="quick-link" asp-controller="Admin" asp-action="Index">Администрирование</a>
+        }
+    </div>
+}

@@ -1,0 +1,16 @@
+﻿@model Prototype.Models.Order
+
+     <h2>Редактировать заказ</h2>
+
+<form asp-action="Edit">
+    <div class="form-group">
+        <label asp-for="OrderNumber"></label>
+        <input asp-for="OrderNumber" class="form-control" />
+        <span asp-validation-for="OrderNumber" class="text-danger"></span>
+    </div>
+
+    <input type="hidden" asp-for="Id" />
+
+    <button type="submit" class="btn btn-primary">Сохранить</button>
+    <a asp-action="Index" class="btn btn-secondary">Отмена</a>
+</form>

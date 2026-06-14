@@ -1,0 +1,27 @@
+﻿@{
+    var operations = (List<Prototype.Models.StockOperation>)ViewBag.StockOperations;
+}
+<h2>Отчётность</h2>
+<ul>
+    <li>Всего заказов: @ViewBag.TotalOrders</li>
+    <li>Выдано заказов: @ViewBag.IssuedOrders</li>
+    <li>Готово к выдаче: @ViewBag.ReadyOrders</li>
+</ul>
+<p>
+    <a asp-action="IssuedOrders">Отчёт по выданным заказам</a> |
+    <a asp-action="IssuedOrdersCsv">Экспорт выданных заказов (CSV)</a>
+</p>
+<h3>Движение товаров (последние 50 операций)</h3>
+<table>
+    <tr><th>Дата</th><th>Товар</th><th>Тип</th><th>Количество</th><th>Комментарий</th></tr>
+    @foreach (var op in operations)
+    {
+        <tr>
+            <td>@op.Date.ToLocalTime().ToString("dd.MM.yyyy HH:mm")</td>
+            <td>@op.Product?.Name</td>
+            <td>@op.OperationType</td>
+            <td>@op.Quantity</td>
+            <td>@op.Comment</td>
+        </tr>
+    }
+</table>

@@ -1,0 +1,38 @@
+﻿@model List<Prototype.Models.Order>
+<h2>Заказы</h2>
+@if (TempData["Error"] is not null)
+{
+    <p class="error">@TempData["Error"]</p>
+}
+<p><a asp-action="Create">Создать тестовый заказ</a></p>
+<table>
+    <tr><th>Номер</th><th>Дата</th><th>Статус</th><th>Состав</th><th>Действия</th></tr>
+    @foreach (var order in Model)
+    {
+        <tr>
+            <td>@order.OrderNumber</td>
+            <td>@order.CreatedDate.ToLocalTime().ToString("dd.MM.yyyy HH:mm")</td>
+            <td>@order.Status</td>
+            <td>
+                @foreach (var item in order.Items)
+                {
+                    <div>@item.Product?.Name x @item.Quantity</div>
+                }
+            </td>
+            <td>
+                @if (order.Status == OrderStatus.Created)
+                {
+                    <a asp-action="ToAssembly" asp-route-id="@order.Id">В сборку</a>
+                }
+                else if (order.Status == OrderStatus.InAssembly)
+                {
+                    <a asp-action="ConfirmAssembly" asp-route-id="@order.Id">Подтвердить комплектацию</a>
+                }
+                else if (order.Status == OrderStatus.ReadyForPickup)
+                {
+                    <a asp-action="Issue" asp-route-id="@order.Id">Выдать</a>
+                }
+            </td>
+        </tr>
+    }
+</table>

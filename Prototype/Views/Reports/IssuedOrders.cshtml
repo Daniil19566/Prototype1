@@ -1,0 +1,23 @@
+﻿@model List<Prototype.Models.Order>
+<h2>Выданные заказы</h2>
+<table>
+    tr>
+    <th>Номер</th>
+    <th>Дата</th>
+    <th>Документ получателя</th>
+    <th>Состав</th></tr>
+    @foreach (var order in Model)
+    {
+        <tr>
+            <td>@order.OrderNumber</td>
+            <td>@order.CreatedDate.ToLocalTime().ToString("dd.MM.yyyy HH:mm")</td>
+            <td>@order.RecipientDocument</td>
+            <td>
+                @foreach (var item in order.Items)
+                {
+                    <div>@item.Product?.Name x @item.Quantity</div>
+                }
+            </td>
+        </tr>
+    }
+</table>

@@ -1,0 +1,12 @@
+﻿@model Prototype.ViewModels.ReceiptViewModel
+<h2>Приём товара</h2>
+<form method="post">
+    <label>Товар</label>
+    <select asp-for="ProductId" asp-items='@(new SelectList(ViewBag.Products, "Id", "Name"))'></select>
+    <label>Количество</label>
+    <input asp-for="Quantity" type="number" />
+    <label>Дата</label>
+    <input asp-for="Date" type="date" />
+    <button type="submit">Подтвердить приём</button>
+    <div asp-validation-summary="All"></div>
+</form>
